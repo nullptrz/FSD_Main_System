@@ -6,7 +6,7 @@ So this is the main program
 The other repository will be used for experimental purposes!
 Once everything works there we will slowly keep adding things to this repository
 
-this is version 1 of the main program! 
+ 
 
 So far everything is working properly! 
 
@@ -34,6 +34,7 @@ So far everything is working properly!
   # Known Bugs #
   ---------------------------------------------
   
-    - Colors extend when CMD is resized 
+    - Colors extend when CMD is resized
+    - Windows Access Issues when Creating Path/File
     
  
