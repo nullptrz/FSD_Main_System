@@ -19,9 +19,15 @@ So far everything is working properly!
   - Added a way to check if the file (ferryseats.json) exists and if it doesn't then it creates one with all values initialized to 0
   - Added a way to colorize the Seats IF seat is available = BLUE ELSE Seat is unavaible = RED
   - Added a way to print the Seats of a selected Ferry 
- 
+  - Added assign seats functions
+  
 # Features to Add #
 ---------------------------------------------
 
-  - Add assign seats functions:
+  - Add menus
+  - Create Alternatives
+  - Input Handling (Wrong input, and other things)
+  - File Handling (Try and Excepts)
+  - Function Enhancements (make code shorter/check for repeated code)
+  
  
