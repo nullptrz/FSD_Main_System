@@ -70,7 +70,7 @@ def print_ferry_seats(customer_ferry, list_of_ferries):
             print(Back.RESET,"= Available Seats")
 
 
-def is_ferry_full(list_of_ferries, customer_ferry):
+def is_ferry_full(customer_ferry, list_of_ferries):
     for ferry_number, ferry in list_of_ferries.items():
         if ferry_number == customer_ferry:
             for seat_number, availability in ferry.items():
@@ -81,7 +81,7 @@ def is_ferry_full(list_of_ferries, customer_ferry):
             return True
 
 
-def is_seat_available(list_of_ferries, customer_ferry, customer_seat):
+def is_seat_available(customer_ferry, customer_seat, list_of_ferries):
     for ferry_number, ferry in list_of_ferries.items():
         if ferry_number == customer_ferry:
             for seat_number, availability in ferry.items():
@@ -93,11 +93,11 @@ def is_seat_available(list_of_ferries, customer_ferry, customer_seat):
                     continue
 
 
-def assign_seat(list_of_ferries, customer_ferry, customer_seat):
-    if is_ferry_full(list_of_ferries, customer_ferry):
+def assign_seat(customer_ferry, customer_seat, list_of_ferries):
+    if is_ferry_full(customer_ferry, list_of_ferries):
         print("The ferry is full next ferry is in one hour")
     else:
-        if is_seat_available(list_of_ferries, customer_ferry, customer_seat):
+        if is_seat_available(customer_ferry, customer_seat, list_of_ferries):
             for ferry_number, ferry in list_of_ferries.items():
                 if ferry_number == customer_ferry:
                     for seat_number, availability in ferry.items():
@@ -107,6 +107,8 @@ def assign_seat(list_of_ferries, customer_ferry, customer_seat):
         else:
             print("The seat is not available")
 
+# Checks if the directory/folder named path exists
+# if it doesn't then creates one
 
 def data_path_exists():
     if os.path.exists('data'):
@@ -115,6 +117,10 @@ def data_path_exists():
         os.mkdir('data')
         return True
 
+# Checks if the file ferryseats.json exists which is the file
+# That contains all data if it doesn't then it calls functions
+# init_ferry to initialize ferry dictionary and then add_ferry
+# To create a list of ferries and saves it as ferryseats.
 
 def file_exists():
     if data_path_exists():
@@ -145,7 +151,7 @@ user_input = input("Enter Ferry: \n>> ")
 list_of_ferries = file_exists()
 print_ferry_seats(user_input.upper(), list_of_ferries)
 seat_number = input("Enter Seat Number: \n>> ")
-print(is_seat_available(list_of_ferries, user_input.upper(), seat_number.upper()))
-assign_seat(list_of_ferries, user_input.upper(), seat_number.upper())
+print(is_seat_available(user_input.upper(), seat_number.upper(), list_of_ferries))
+assign_seat(user_input.upper(), seat_number.upper(), list_of_ferries)
 print_ferry_seats(user_input.upper(), read_from_file())
 input()
