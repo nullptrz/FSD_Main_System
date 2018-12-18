@@ -1,18 +1,12 @@
-"""
-Created on Wednesday 19th December 2018
-@author: ALI AHSAN SAEED
-"""
-
-
 import json
 import os
 from colorama import Fore, Back, Style
 from colorama import init
 
-
 # intialize the colorama module
-
 init()
+
+os.system("mode con: cols=130 lines=30")
 
 # To create a ferry with N business and M economy Seats #
 # But it is assumed that the ferries have 10 Business and 40 Economy Seats #
@@ -21,13 +15,13 @@ init()
 
 def init_ferry():
     ferry = {}
-    for x in range(1, 11, 1): # Could replace 11 by N to accomodate more seats
+    for x in range(1, 11, 1):
         if x >= 10:
             x = 'B' + str(x)
         else:
             x = 'B0' + str(x)
         ferry[x] = 0
-    for x in range(1, 41, 1): # Could replace 40 by M to accomodate more seats
+    for x in range(1, 41, 1):
         if x < 10:
             x = 'E0' + str(x)
         else :
@@ -40,29 +34,29 @@ def init_ferry():
 
 def add_ferry(ferry):
     list_of_ferry = {}
-    for a in range(1, 9, 1): # Could replace 9 by no_of_ferries for more ferries
+    for a in range(1, 9, 1):
         list_of_ferry['FERRY' + " " +str(a)] = ferry
     return list_of_ferry
 
 #  To print all the seats of a specific ferry that the user enters # 
 
 
-def print_ferry_seats(customer_ferry, list_of_ferries):
+def print_ferry_seats(user_input, list_of_ferries):
             count = 0
-            for ferry_number, ferry in list_of_ferries.items():
-                if ferry_number == customer_ferry:
-                    for seat_number, availability in ferry.items():
+            for key, value in list_of_ferries.items():
+                if key == user_input:
+                    for seat, num in value.items():
                         count += 1
-                        if availability == 0:
+                        if num == 0:
                             x = Back.BLUE
                         else:
                             x = Back.RED
                         if count % 5 != 0:
                                 print(Back.RESET, " ", end=' ')
-                                print(x,"* {} * ".format(seat_number, availability), end=' ')
+                                print(x,"* {} * ".format(seat, num), end=' ')
                         elif count % 5 == 0:
                                 print(Back.RESET, " ", end=' ')
-                                print(x, "* {} * ".format(seat_number, availability), end=' ')
+                                print(x, "* {} * ".format(seat, num), end=' ')
                                 print("\n")
             print(Back.RED, "RED", end=' ')
             print(Back.RESET, "= Booked Seats\t\t", end=' ')
@@ -70,39 +64,39 @@ def print_ferry_seats(customer_ferry, list_of_ferries):
             print(Back.RESET,"= Available Seats")
 
 
-def is_ferry_full(list_of_ferries, customer_ferry):
-    for ferry_number, ferry in list_of_ferries.items():
-        if ferry_number == customer_ferry:
-            for seat_number, availability in ferry.items():
-                if availability == 0:
+def is_ferry_full(list_of_ferries, user_input):
+    for key, value in list_of_ferries.items():
+        if key == user_input:
+            for seat, num in value.items():
+                if num == 0:
                     return False
-                elif availability == 1:
+                elif num == 1:
                     continue
             return True
 
 
-def is_seat_available(list_of_ferries, customer_ferry, customer_seat):
-    for ferry_number, ferry in list_of_ferries.items():
-        if ferry_number == customer_ferry:
-            for seat_number, availability in ferry.items():
-                if seat_number == customer_seat and availability == 0:
+def is_seat_available(ferry, user_input, seat_number):
+    for key, value in list_of_ferries.items():
+        if key == user_input:
+            for seat, num in value.items():
+                if seat == seat_number and num == 0:     
                     return "Seat is available"
-                elif seat_number == customer_seat and availability == 1:
+                elif seat == seat_number and num == 1:
                     return "Seat not Available"
                 else:
                     continue
 
 
-def assign_seat(list_of_ferries, customer_ferry, customer_seat):
-    if is_ferry_full(list_of_ferries, customer_ferry):
+def assign_seat(list_of_ferries, user_input, seat_number):
+    if is_ferry_full(list_of_ferries, user_input):
         print("The ferry is full next ferry is in one hour")
     else:
-        if is_seat_available(list_of_ferries, customer_ferry, customer_seat):
-            for ferry_number, ferry in list_of_ferries.items():
-                if ferry_number == customer_ferry:
-                    for seat_number, availability in ferry.items():
-                        if seat_number == customer_seat:
-                            list_of_ferries[customer_ferry][customer_seat] = 1
+        if is_seat_available(list_of_ferries, user_input, seat_number):
+            for key, value in list_of_ferries.items():
+                if key == user_input:
+                    for seat, num in value.items():
+                        if seat == seat_number:
+                            list_of_ferries[user_input][seat_number] = 1
                             save_to_file(list_of_ferries)
         else:
             print("The seat is not available")
@@ -140,6 +134,7 @@ def read_from_file():
     with open('data/ferryseats.json') as seats_data:
               list_of_ferries = json.load(seats_data)
     return list_of_ferries
+
 
 user_input = input("Enter Ferry: \n>> ")
 list_of_ferries = file_exists()
