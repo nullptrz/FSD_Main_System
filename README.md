@@ -30,4 +30,10 @@ So far everything is working properly!
   - File Handling (Try and Excepts)
   - Function Enhancements (make code shorter/check for repeated code)
   
+  
+  # Known Bugs #
+  ---------------------------------------------
+  
+    - Colors extend when CMD is resized 
+    
  
