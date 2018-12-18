@@ -54,25 +54,62 @@ def print_ferry_seats(user_input, list_of_ferries):
             print(Back.RESET,"= Available Seats")
 
 
+def is_ferry_full(list_of_ferries, user_input):
+    for key, value in list_of_ferries.items():
+        if key == user_input:
+            for seat, num in value.items():
+                if num == 0:
+                    return "Ferry not Full"
+                elif num == 1:
+                    continue
+            return "Ferry is Full"
+
+def is_seat_available(ferry, user_input, seat_number):
+    for key, value in list_of_ferries.items():
+        if key == user_input:
+            for seat, num in value.items():
+                if seat == seat_number and num == 0:     
+                    return "Seat is available"
+                elif seat == seat_number and num == 1:
+                    return "Seat not Available"
+                else:
+                    continue
+                
+                    
 
 
-try:
+def data_path_exists():
     if os.path.exists('data'):
-        with open('data/ferryseats.json') as seatdata:
-            list_of_ferries=json.load(seatdata)
-    elif not os.path.exists('data'):
+        return True
+    else:
         os.mkdir('data')
-        with open('data/ferryseats.json', 'w') as file:
-          json.dump(add_ferry(init_ferry()), file)
-except:
-    with open('data/ferryseats.json', 'w') as file:
-          json.dump(add_ferry(init_ferry()), file)
-finally:
-    with open('data/ferryseats.json') as seatdata:
-        list_of_ferries=json.load(seatdata)
-    user_input = input("Enter ferry: ")
-    print_ferry_seats(user_input.upper(), list_of_ferries)
-    input("Hello what is your name: ")
+        return True
+
+def file_exists():
+    if data_path_exists():
+        try:
+            with open('data/ferryseats.json') as seats_data:
+                list_of_ferries = json.load(seats_data)
+            return list_of_ferries
+        except:
+            with open('data/ferryseats.json', 'w') as file:
+                json.dump(add_ferry(init_ferry()), file)
+        finally:
+            with open('data/ferryseats.json') as seats_data:
+                list_of_ferries = json.load(seats_data)
+            return list_of_ferries
+                    
+            
+
+user_input = input("Enter Ferry: \n>> ")
+list_of_ferries = file_exists()
+print_ferry_seats(user_input.upper(), list_of_ferries)
+seat_number = input("Enter Seat Number: \n>> ")
+print(is_seat_available(list_of_ferries, user_input.upper(), seat_number.upper()))
+input()
+
+
+
 
 
 
