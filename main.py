@@ -92,14 +92,14 @@ def assign_seat(list_of_ferries, user_input, seat_number):
                             save_to_file(list_of_ferries)
         else:
             print("The seat is not available")
-            
+   
 def data_path_exists():
     if os.path.exists('data'):
         return True
     else:
         os.mkdir('data')
         return True
-    
+
 def file_exists():
     if data_path_exists():
         try:
