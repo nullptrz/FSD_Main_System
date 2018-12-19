@@ -10,7 +10,7 @@ from colorama import Fore, Back, Style
 from colorama import init
 
 
-# intialize the colorama module
+# initialize the colorama module
 
 init()
 
@@ -21,16 +21,16 @@ init()
 
 def init_ferry():
     ferry = {}
-    for x in range(1, 11, 1): # Could replace 11 by N to accomodate more seats
+    for x in range(1, 11, 1):  # Could replace 11 by N to accommodate more seats
         if x >= 10:
             x = 'B' + str(x)
         else:
             x = 'B0' + str(x)
         ferry[x] = 0
-    for x in range(1, 41, 1): # Could replace 40 by M to accomodate more seats
+    for x in range(1, 41, 1):  # Could replace 40 by M to accommodate more seats
         if x < 10:
             x = 'E0' + str(x)
-        else :
+        else:
             x = 'E' + str(x)
         ferry[x] = 0
     return ferry
@@ -40,11 +40,11 @@ def init_ferry():
 
 def add_ferry(ferry):
     list_of_ferry = {}
-    for a in range(1, 9, 1): # Could replace 9 by no_of_ferries for more ferries
-        list_of_ferry['FERRY' + " " +str(a)] = ferry
+    for a in range(1, 9, 1):  # Could replace 9 by no_of_ferries for more ferries
+        list_of_ferry['FERRY' + " " + str(a)] = ferry
     return list_of_ferry
 
-#  To print all the seats of a specific ferry that the user enters # 
+#  To print all the seats of a specific ferry that the user enters #
 
 
 def print_ferry_seats(customer_ferry, list_of_ferries):
@@ -59,15 +59,15 @@ def print_ferry_seats(customer_ferry, list_of_ferries):
                             x = Back.RED
                         if count % 5 != 0:
                                 print(Back.RESET, " ", end=' ')
-                                print(x,"* {} * ".format(seat_number, availability), end=' ')
+                                print(x, "* {} * ".format(seat_number, availability), end=' ')
                         elif count % 5 == 0:
                                 print(Back.RESET, " ", end=' ')
                                 print(x, "* {} * ".format(seat_number, availability), end=' ')
                                 print("\n")
             print(Back.RED, "RED", end=' ')
             print(Back.RESET, "= Booked Seats\t\t", end=' ')
-            print(Back.BLUE, "BLUE", end=' ' )
-            print(Back.RESET,"= Available Seats")
+            print(Back.BLUE, "BLUE", end=' ')
+            print(Back.RESET, "= Available Seats")
 
 
 def is_ferry_full(customer_ferry, list_of_ferries):
@@ -110,6 +110,7 @@ def assign_seat(customer_ferry, customer_seat, list_of_ferries):
 # Checks if the directory/folder named path exists
 # if it doesn't then creates one
 
+
 def data_path_exists():
     if os.path.exists('data'):
         return True
@@ -122,13 +123,14 @@ def data_path_exists():
 # init_ferry to initialize ferry dictionary and then add_ferry
 # To create a list of ferries and saves it as ferryseats.
 
+
 def file_exists():
     if data_path_exists():
         try:
             with open('data/ferryseats.json') as seats_data:
                 list_of_ferries = json.load(seats_data)
             return list_of_ferries
-        except:
+        except FileNotFoundError:
             with open('data/ferryseats.json', 'w') as file:
                 json.dump(add_ferry(init_ferry()), file)
         finally:
@@ -144,14 +146,15 @@ def save_to_file(list_of_ferries):
 
 def read_from_file():
     with open('data/ferryseats.json') as seats_data:
-              list_of_ferries = json.load(seats_data)
+        list_of_ferries = json.load(seats_data)
     return list_of_ferries
 
-user_input = input("Enter Ferry: \n>> ")
-list_of_ferries = file_exists()
-print_ferry_seats(user_input.upper(), list_of_ferries)
-seat_number = input("Enter Seat Number: \n>> ")
-print(is_seat_available(user_input.upper(), seat_number.upper(), list_of_ferries))
-assign_seat(user_input.upper(), seat_number.upper(), list_of_ferries)
-print_ferry_seats(user_input.upper(), read_from_file())
-input()
+
+ferry_choice = input("Enter Ferry: \n>> ")
+ferry_list = file_exists()
+print_ferry_seats(ferry_choice.upper(), ferry_list)
+seat_choice = input("Enter Seat Number: \n>> ")
+print(is_seat_available(ferry_choice.upper(), seat_choice.upper(), ferry_list))
+assign_seat(ferry_choice.upper(), seat_choice.upper(), ferry_list)
+print_ferry_seats(ferry_choice.upper(), read_from_file())
+input("Test: ")
