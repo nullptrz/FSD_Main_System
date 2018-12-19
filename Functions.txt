@@ -1,0 +1,134 @@
+## Initialize the ferry datastructure with all seat values set to 0
+
+def init_ferry():
+    ferry = {}
+    for x in range(1, 11, 1):  # Could replace 11 by N to accommodate more seats
+        if x >= 10:
+            x = 'B' + str(x)
+        else:
+            x = 'B0' + str(x)
+        ferry[x] = 0
+    for x in range(1, 41, 1):  # Could replace 40 by M to accommodate more seats
+        if x < 10:
+            x = 'E0' + str(x)
+        else:
+            x = 'E' + str(x)
+        ferry[x] = 0
+    return ferry
+
+# Adds ferry datastructure in to another datastructure that keeps a list of the ferries
+
+def add_ferry(ferry):
+    list_of_ferry = {}
+    for a in range(1, 9, 1):  # Could replace 9 by no_of_ferries for more ferries
+        list_of_ferry['FERRY' + " " + str(a)] = ferry
+    return list_of_ferry
+
+# Prints the seating arrangement of the selected ferry by the customer
+
+def print_ferry_seats(customer_ferry, list_of_ferries):
+            count = 0
+            for ferry_number, ferry in list_of_ferries.items():
+                if ferry_number == customer_ferry:
+                    for seat_number, availability in ferry.items():
+                        count += 1
+                        if availability == 0:
+                            x = Back.BLUE
+                        else:
+                            x = Back.RED
+                        if count % 5 != 0:
+                                print(Back.RESET, " ", end=' ')
+                                print(x, "* {} * ".format(seat_number, availability), end=' ')
+                        elif count % 5 == 0:
+                                print(Back.RESET, " ", end=' ')
+                                print(x, "* {} * ".format(seat_number, availability), end=' ')
+                                print("\n")
+            print(Back.RED, "RED", end=' ')
+            print(Back.RESET, "= Booked Seats\t\t", end=' ')
+            print(Back.BLUE, "BLUE", end=' ')
+            print(Back.RESET, "= Available Seats")
+
+# Check if ferry is full that is if all seats are == 1
+
+def is_ferry_full(customer_ferry, list_of_ferries):
+    for ferry_number, ferry in list_of_ferries.items():
+        if ferry_number == customer_ferry:
+            for seat_number, availability in ferry.items():
+                if availability == 0:
+                    return False
+                elif availability == 1:
+                    continue
+            return True
+
+
+# Check if a certain seat chosen by customer is available or not
+
+def is_seat_available(customer_ferry, customer_seat, list_of_ferries):
+    for ferry_number, ferry in list_of_ferries.items():
+        if ferry_number == customer_ferry:
+            for seat_number, availability in ferry.items():
+                if seat_number == customer_seat and availability == 0:
+                    return "Seat is available"
+                elif seat_number == customer_seat and availability == 1:
+                    return "Seat not Available"
+                else:
+                    continue
+
+
+# Assign the seat that is update ferry data structure with customer chosen seat and change value to 1 and saves to the file
+
+def assign_seat(customer_ferry, customer_seat, list_of_ferries):
+    if is_ferry_full(customer_ferry, list_of_ferries):
+        print("The ferry is full next ferry is in one hour")
+    else:
+        if is_seat_available(customer_ferry, customer_seat, list_of_ferries):
+            for ferry_number, ferry in list_of_ferries.items():
+                if ferry_number == customer_ferry:
+                    for seat_number, availability in ferry.items():
+                        if seat_number == customer_seat:
+                            list_of_ferries[customer_ferry][customer_seat] = 1
+                            save_to_file(list_of_ferries)
+        else:
+            print("The seat is not available")
+
+
+# Check whether certain path (data) which is where the saved data is: exists or not
+
+def data_path_exists():
+    if os.path.exists('data'):
+        return True
+    else:
+        os.mkdir('data')
+        return True
+
+# Checks if the data file exists if not calls the ferry datastructure creator function and list of ferry function and saves it 
+# in the data file 
+
+def file_exists():
+    if data_path_exists():
+        try:
+            with open('data/ferryseats.json') as seats_data:
+                list_of_ferries = json.load(seats_data)
+            return list_of_ferries
+        except FileNotFoundError:
+            with open('data/ferryseats.json', 'w') as file:
+                json.dump(add_ferry(init_ferry()), file)
+        finally:
+            with open('data/ferryseats.json') as seats_data:
+                list_of_ferries = json.load(seats_data)
+            return list_of_ferries
+
+
+# Saves the datastructure to the file 
+
+def save_to_file(list_of_ferries):
+    with open('data/ferryseats.json', 'w') as file:
+        json.dump(list_of_ferries, 
+
+# Read the data from the file and assign it a variable to be returned to caller if needed
+
+def read_from_file():
+    with open('data/ferryseats.json') as seats_data:
+        list_of_ferries = json.load(seats_data)
+    return list_of_ferries
+
