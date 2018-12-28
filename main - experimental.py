@@ -7,16 +7,15 @@ PROGRAM: Ferry Ticketing System
          Seats for customers.
 """
 
-
 import json
 import os
 from colorama import Fore, Back, Style
 from colorama import init
 
-
 # initialize the colorama module
 
 init()
+
 
 # To create a ferry with N business and M economy Seats #
 # But it is assumed that the ferries have 10 Business and 40 Economy Seats #
@@ -38,6 +37,7 @@ def init_ferry():
         ferry[economy_seats] = 0
     return ferry
 
+
 # Adds 8 Ferries to another dictionary/ Used to initially create a list of ferries #
 # Uses the ferries created by the init_ferry function #
 
@@ -48,37 +48,47 @@ def create_ferry_list(ferry):
         list_of_ferry['FERRY' + " " + str(a)] = ferry
     return list_of_ferry
 
+
+def display_ferry_seats(customer_ferry, list_of_ferries):
+    count = 0  # used to format the output so that after every 5 seats there is a \n or line-break
+    ferry = list_of_ferries[customer_ferry]
+    for seat_number, availability in ferry.items():
+        count += 1
+        if availability == 0:
+            seat_color = Back.BLUE
+        else:
+            seat_color = Back.RED
+        if count % 5 != 0:
+            print(Back.RESET, " ", end=' ')
+            print(seat_color, "* {} * ".format(seat_number, availability), end=' ')
+        elif count % 5 == 0:
+            print(Back.RESET, " ", end=' ')
+            print(seat_color, "* {} * ".format(seat_number, availability), end=' ')
+            print("\n")
+    print(Back.RED, "RED", end=' ')
+    print(Back.RESET, "= Booked Seats\t\t", end=' ')
+    print(Back.BLUE, "BLUE", end=' ')
+    print(Back.RESET, "= Available Seats")
+
+
+def customer_ferry_exists(customer_ferry, list_of_ferries):
+    count_of_ferries = 0
+    for ferry_number, ferry in list_of_ferries.items():
+        count_of_ferries += 1
+        if ferry_number == customer_ferry:
+            return True
+        elif count_of_ferries == len(list_of_ferries):
+            return False
+        else:
+            continue
+
+
 #  To print all the seats of a specific ferry that the user enters #
 
 
-def print_ferry_seats(customer_ferry, list_of_ferries):
-            count = 0 #used to format the output so that after every 5 seats there is a \n or line-break
-            count_of_ferries = 0
-            for ferry_number, ferry in list_of_ferries.items():
-                count_of_ferries += 1
-                if ferry_number == customer_ferry:
-                    for seat_number, availability in ferry.items():
-                        count += 1
-                        if availability == 0:
-                            seat_color = Back.BLUE
-                        else:
-                            seat_color = Back.RED
-                        if count % 5 != 0:
-                                print(Back.RESET, " ", end=' ')
-                                print(seat_color, "* {} * ".format(seat_number, availability), end=' ')
-                        elif count % 5 == 0:
-                                print(Back.RESET, " ", end=' ')
-                                print(seat_color, "* {} * ".format(seat_number, availability), end=' ')
-                                print("\n")
-                elif count_of_ferries == len(list_of_ferries):
-                    print("Enter valid ferry number")
-                else:
-                    continue
-            print(Back.RED, "RED", end=' ')
-            print(Back.RESET, "= Booked Seats\t\t", end=' ')
-            print(Back.BLUE, "BLUE", end=' ')
-            print(Back.RESET, "= Available Seats")
-
+##def print_ferry_seats(customer_ferry, list_of_ferries):
+##    if customer_ferry_exists(customer_ferry, list_of_ferries):
+##        display_ferry_seats(customer_ferry, list_of_ferries)
 
 def is_ferry_full(customer_ferry, list_of_ferries):
     for ferry_number, ferry in list_of_ferries.items():
@@ -117,6 +127,7 @@ def assign_seat(customer_ferry, customer_seat, list_of_ferries):
         else:
             print("The seat is not available")
 
+
 # Checks if the directory/folder named 'data' exists #
 # if it doesn't then creates one #
 
@@ -127,6 +138,7 @@ def data_path_exists():
     else:
         os.mkdir('data')
         return True
+
 
 # Checks if the file ferryseats.json exists which is the file #
 # That contains all data if it doesn't then it calls functions #
@@ -162,9 +174,13 @@ def read_from_file():
 
 ferry_choice = input("Enter Ferry: \n>> ")
 ferry_list = file_exists()
-print_ferry_seats(ferry_choice.upper(), ferry_list)
-seat_choice = input("Enter Seat Number: \n>> ")
-print(is_seat_available(ferry_choice.upper(), seat_choice.upper(), ferry_list))
-assign_seat(ferry_choice.upper(), seat_choice.upper(), ferry_list)
-print_ferry_seats(ferry_choice.upper(), read_from_file())
+if customer_ferry_exists(ferry_choice.upper(), ferry_list):
+    #print_ferry_seats(ferry_choice.upper(), ferry_list)
+    display_ferry_seats(ferry_choice.upper(), read_from_file())
+    seat_choice = input("Enter Seat Number: \n>> ")
+    print(is_seat_available(ferry_choice.upper(), seat_choice.upper(), ferry_list))
+    assign_seat(ferry_choice.upper(), seat_choice.upper(), ferry_list)
+    display_ferry_seats(ferry_choice.upper(), read_from_file())
+else:
+    print("Ferry doesnt exist")
 input("Test: ")
