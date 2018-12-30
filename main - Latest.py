@@ -25,7 +25,7 @@ def get_time():
         5. 14:00
         6. 15:00
         7. 16:00
-        8. 17:00\n\nEnter selection :"""))
+        8. 17:00\n\nEnter selection: """))
             if (time == 1):
                 return 10
             elif (time == 2):
@@ -223,8 +223,11 @@ def is_seat_available(ferry_id, customer_seat, ferry_list):
 def display_ferry_seats(ferry_id, ferry_list):
     clear_screen()
     ferry = ferry_list[ferry_id]
+    date = datetime.datetime.now().strftime("%d-%m-%Y")
     count = 0  # used to format the output so that after every 5 seats there is a \n or line-break
     print("-" * 65 + "\n\t\t\tSEATING ARRANGEMENT\n" + "-" * 65 + "\n")
+    print("Ferry ID: {} \t\t\t\t Date: {}\n".format(ferry_id, date))
+    print(Fore.YELLOW, "-" * 65 + "\n\t\t\tBUSINESS CLASS\n" + "-" * 65, Fore.RESET)
     for seat_number, availability in ferry.items():
         count += 1
         if availability == 0:
@@ -234,6 +237,10 @@ def display_ferry_seats(ferry_id, ferry_list):
         if count % 5 != 0:
             print(Back.RESET, " ", end=' ')
             print(seat_color, "* {} * ".format(seat_number, availability), end=' ')
+        if count == 10:
+            print(Back.RESET, " ", end=' ')
+            print(seat_color, "* {} * ".format(seat_number, availability), end=' ')
+            print(Back.RESET, Fore.CYAN, "\n" + "-" * 65 + "\n\t\t\tECONOMY CLASS\n" + "-" * 65, Fore.RESET)
         elif count % 5 == 0:
             print(Back.RESET, " ", end=' ')
             print(seat_color, "* {} * ".format(seat_number, availability), end=' ')
@@ -364,7 +371,7 @@ def purchase_menu():
 def view_seating():
     while (True):
         clear_screen()
-        selection = input("""SEATING ARRANGEMENT MODULE
+        selection = input("-" * 60 + "\n\t\t\tSEATING ARRANGEMENT MODULE\n" + "-" * 60 +"""
 
         F - To select Ferry ID
         T - To select Trip Time
@@ -397,11 +404,10 @@ def ferry_menu():
             input("Enter valid ferry number! Press [Enter] to try again. .")
 
 
-
 def main_menu():
     while (True):
         clear_screen()
-        selection = input(""" Main Menu
+        selection = input("-" * 60 + "\n\t\t\tMain Menu\n" + "-" * 60 + """
 
         P - To Purchase Ticket
         V - To View Seating Arrangement
