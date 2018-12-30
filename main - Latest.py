@@ -1,4 +1,3 @@
-# Please add input validation where ever the input is taken from the user #
 import datetime
 import json
 import os
@@ -48,7 +47,6 @@ def get_time():
         except ValueError:
             input("Please Enter a Number only! Press [Enter] to try again. .")
 
-
 # Returns destination for the trip
 def get_destination():
     while (True):
@@ -72,7 +70,6 @@ def get_destination():
         except ValueError:
             input("Please enter a Number only! Press [Enter] to try again. . ")
 
-
 # Returns the name of the customer
 def get_name():
     while (True):
@@ -87,8 +84,8 @@ def get_name():
 def create_timeslot():
     time_slot = []
 
-    for time in range(10, 14, 1):
-        time_slot.append((time, time + 4))
+    for time in range(10, 18, 1):
+        time_slot.append((time-9,time))
 
     return time_slot
 
@@ -96,7 +93,7 @@ def create_timeslot():
 def create_schedule_penang(time_slot):
     schedule_penang = []
 
-    for trip_penang in range(0, 4, 1):
+    for trip_penang in range(0, 8, 1):
         schedule_penang.append(["Langkawi", "Penang", time_slot[trip_penang]])
 
     return schedule_penang
@@ -107,7 +104,7 @@ def create_schedule_penang(time_slot):
 def create_schedule_langkawi(time_slot):
     schedule_langkawi = []
 
-    for trip_langkawi in range(0, 4, 1):
+    for trip_langkawi in range(0, 8, 1):
         schedule_langkawi.append(["Penang", "Langkawi", time_slot[trip_langkawi]])
 
     return schedule_langkawi
@@ -117,9 +114,9 @@ def create_schedule_langkawi(time_slot):
 def create_ferry_schedule(schedule_langkawi, schedule_penang):
     ferry_schedule = {}
 
-    for item in range(0, 4, 1):
+    for item in range(0, 8, 1):
         ferry_schedule['FERRY' + " " + str(item + 1)] = schedule_langkawi[item]
-        ferry_schedule['FERRY' + " " + str(item + 5)] = schedule_penang[item]
+        ferry_schedule['FERRY' + " " + str(item + 9)] = schedule_penang[item]
 
     return ferry_schedule
 
@@ -147,7 +144,7 @@ def init_ferry():
 # Hardcoded to create 8 Ferries only
 def create_ferry_list(ferry):
     list_of_ferry = {}
-    for ferry_number in range(1, 9, 1):  # Could replace 9 by no_of_ferries for more ferries
+    for ferry_number in range(1, 17, 1):  # Could replace 9 by no_of_ferries for more ferries
         list_of_ferry['FERRY' + " " + str(ferry_number)] = ferry
     return list_of_ferry
 
@@ -309,7 +306,6 @@ def get_seat(type_of_seat, ferry_id, ferry_list):
         else:
             input("Seat is not available please choose another seat!")
 
-
 # Optimize this function
 def purchase_menu():
     clear_screen()
@@ -387,18 +383,40 @@ Please enter one of the Options[F or T or M]: """)
         else:
             input("Invalid Input! Please try again... Press [Enter] to Continue. . . ")
 
+def ferry_selection(ferry_list):
+    while (True):
+        clear_screen()
+        try:
+            print("\nSELECT A FERRY TO VIEW THE SEATING ARRANGEMENT\n\n")
+            for number, ferry_number in enumerate(ferry_list):
+                print(number + 1, "-->", ferry_number)
+            print("\n")
+            selection = int(input("Enter the number to view the associated ferry seating [Ex: 2] >> "))
+            if (selection > 0 and selection < 17):
+                return selection
+            else:
+                input("Please enter number between 1 and 16.. Press [Enter] to Continue. .")
+        except ValueError:
+            input("Please enter numbers only! Press [Enter] to continue. .")
+
+
+def chosen_ferry(selection, ferry_list):
+    for number, ferry_number in enumerate(ferry_list):
+        if (selection == number):
+            return ferry_number
+        else:
+            continue
+
+
 # Improve this function
 def ferry_menu():
     ferry_list = file_exists()
     while (True):
         clear_screen()
-        print("\nSELECT A FERRY TO VIEW THE SEATING ARRANGEMENT\n\n")
-        for number, ferry_number in enumerate(ferry_list):
-            print(number + 1, "-->", ferry_number)
-        print("\n")
-        selection = input("Enter ferry number[Ex: Ferry 8]: ")
-        if selection.upper() in ferry_list:
-            display_ferry_seats(selection.upper(), ferry_list)
+        selection = ferry_selection(ferry_list)
+        ferry_id = chosen_ferry(selection-1, ferry_list)
+        if ferry_id.upper() in ferry_list:
+            display_ferry_seats(ferry_id.upper(), ferry_list)
             break
         else:
             input("Enter valid ferry number! Press [Enter] to try again. .")
@@ -473,7 +491,7 @@ def read_from_file():
 def print_boarding_ticket(customer_name, source, destination, date, time, type_of_seat, seat_number, ferry_number):
     clear_screen()
     print("-" * 60 + "\n\t\t\tBOARDING TICKET\n" + "-" * 60)
-    print("Customer Name: {}\nSource: {}\t\t\t\tDestination: {}\nDate: {}\t\t\tTime: {}\nType Of Seat: {}\t\t\tSeat Number: {}\nFerry Number: {}".format(customer_name, source,
+    print("Customer Name: {}\nSource: {}\t\t\t\tDestination: {}\nDate: {}\t\t\tTime: {}\nType Of Seat: {}\t\t\tSeat Number: {}\nFerry ID: {}".format(customer_name, source,
                                                                                                                                           destination, date, time,
                                                                                                                                            type_of_seat, seat_number,
                                                                                                                                            ferry_number))
