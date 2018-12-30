@@ -43,7 +43,6 @@ def get_time():
         else:
             input("Please enter valid choice.. press [Enter] to continue . . . ")
 
-
 # Returns destination for the trip
 def get_destination():
     while (True):
@@ -65,8 +64,11 @@ def get_destination():
 # Returns the name of the customer
 def get_name():
     while (True):
-        customer_name = input("Enter your name: ")
-        if customer_name.isalpha():
+        customer_f_name = input("Enter your first name: ")
+        customer_m_name = input("Enter your middle name(if no middle name leave blank): ")
+        customer_l_name = input("Enter your last name: ")
+        customer_name = customer_f_name + " " + customer_m_name + " " + customer_l_name
+        if customer_f_name.isalpha() and customer_l_name.isalpha():
             return customer_name
 
 # Create list of tuples that contains (1st trip time, 2nd trip time)
@@ -277,6 +279,7 @@ def purchase_menu():
         if type_of_seat.upper() == "BUSINESS":
             if is_zone_available(ferry_id.upper(), type_of_seat, ferry_list):
                     seat_number = prompt_user_seat("[Ex: B04", ferry_id, ferry_list)
+                    seat_number = seat_number.upper()
                     if (is_seat_available(ferry_id.upper(), seat_number, ferry_list)):
                         assign_seat(ferry_id.upper(), seat_number, ferry_list)
                     else:
@@ -288,6 +291,7 @@ def purchase_menu():
                     choice = input("Business zone is fully booked, is it okay to be placed in Economy Class? ['Yes' or 'No'] ")
                     if choice.upper() == "YES":
                         seat_number = prompt_user_seat("[Ex: E06]", ferry_id, ferry_list)
+                        seat_number = seat_number.upper()
                         if (is_seat_available(ferry_id.upper(), seat_number, ferry_list)):
                             assign_seat(ferry_id.upper(), seat_number, ferry_list)
                         else:
@@ -302,6 +306,7 @@ def purchase_menu():
         else:
             if is_zone_available(ferry_id.upper(), type_of_seat, ferry_list):
                 seat_number = prompt_user_seat("[Ex: E08]", ferry_id, ferry_list)
+                seat_number = seat_number.upper()
                 if (is_seat_available(ferry_id.upper(), seat_number, ferry_list)):
                     assign_seat(ferry_id.upper(), seat_number, ferry_list)
                 else:
@@ -313,6 +318,7 @@ def purchase_menu():
                     choice = input("Economy zone is fully booked, is it okay to be placed in Business Class? ['Yes' or 'No'] ")
                     if choice.upper() == "YES":
                         seat_number = prompt_user_seat("[Ex: B01]", ferry_id, ferry_list)
+                        seat_number = seat_number.upper()
                         if (is_seat_available(ferry_id.upper(), seat_number, ferry_list)):
                             assign_seat(ferry_id.upper(), seat_number, ferry_list)
                         else:
@@ -383,7 +389,7 @@ Please Enter one of the Options[P or V or Q]: """)
             view_seating()
         elif (selection.upper() == "Q"):
             while True:
-                choice = input("Are you sure you want to quit? \nType Y: Yes or N: No: ")
+                choice = input("Are you sure you want to quit?(Y - Yes or N - No) >> ")
                 if choice.upper() == 'Y':
                     quit()
                 elif choice.upper() == "N":
