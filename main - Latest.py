@@ -15,51 +15,63 @@ def get_time():
     while (True):
         clear_screen()
         print_purchasing_header()
-        time = int(input("""Enter time of departure (24-hour): 
-                                    1. 10:00
-                                    2. 11:00
-                                    3. 12:00
-                                    4. 13:00
-                                    5. 14:00
-                                    6. 15:00
-                                    7. 16:00
-                                    8. 17:00\n\nEnter selection :"""))
-        if (time == 1):
-            return 10
-        elif (time == 2):
-            return 11
-        elif (time == 3):
-            return 12
-        elif (time == 4):
-            return 13
-        elif (time == 5):
-            return 14
-        elif (time == 6):
-            return 15
-        elif (time == 7):
-            return 16
-        elif (time == 8):
-            return 17
-        else:
-            input("Please enter valid choice.. press [Enter] to continue . . . ")
+        try:
+            time = int(input("""Enter time of departure (24-hour):
+             
+        1. 10:00
+        2. 11:00
+        3. 12:00
+        4. 13:00
+        5. 14:00
+        6. 15:00
+        7. 16:00
+        8. 17:00\n\nEnter selection :"""))
+            if (time == 1):
+                return 10
+            elif (time == 2):
+                return 11
+            elif (time == 3):
+                return 12
+            elif (time == 4):
+                return 13
+            elif (time == 5):
+                return 14
+            elif (time == 6):
+                return 15
+            elif (time == 7):
+                return 16
+            elif (time == 8):
+                return 17
+            else:
+                input("Please enter valid choice.. press [Enter] to continue . . . ")
+
+        except ValueError:
+            input("Please Enter a Number only! Press [Enter] to try again. .")
+
 
 # Returns destination for the trip
 def get_destination():
     while (True):
         clear_screen()
         print_purchasing_header()
-        destination_choice = int(input("""Select your destination :
-            1.Penang - Langkawi
-            2.Langkawi - Penang\n\nEnter selection :"""))
-        destination = None
-        if (destination_choice == 1):
-            destination = "Langkawi"
-            return destination
-        elif (destination_choice == 2):
-            destination = "Penang"
-            return destination
-        else:
-            input("Wrong input...press any key to return to menu")
+        try:
+            destination_choice = int(input("""Select your destination :
+            
+        1.Penang - Langkawi
+        2.Langkawi - Penang\n\nEnter selection :"""))
+
+            destination = None
+            if (destination_choice == 1):
+                destination = "Langkawi"
+                return destination
+            elif (destination_choice == 2):
+                destination = "Penang"
+                return destination
+            else:
+                input("Invalid Number...Press [Enter] to try again. .")
+        except ValueError:
+            input("Please enter a Number only! Press [Enter] to try again. . ")
+
 
 # Returns the name of the customer
 def get_name():
@@ -182,7 +194,7 @@ def is_zone_available(ferry_id, type_of_seat, ferry_list):
 
     business = list(ferry)
     economy = list(ferry)
-    if (type_of_seat == "Business"):
+    if (type_of_seat == "BUSINESS"):
         business = business[:10]
         for seat in business:
             if ferry[seat] == 0:
@@ -260,6 +272,37 @@ def prompt_user_seat(seat_type, ferry_id, ferry_list):
         seat_number = input("\nType the seat number" + seat_text + ": ") # Add input validation
         return seat_number
 
+def get_type_of_seat():
+    while (True):
+        clear_screen()
+        type_of_seat = input("""Select Type of Seat:
+        
+        B - Business
+        E - Economy
+            
+Type the letter of the desired class of seat[Ex: B for Business] >> """)
+        if type_of_seat.upper() == "B":
+            return "business"
+        elif type_of_seat.upper() == "E":
+            return "economy"
+        else:
+            input("Please enter only [B or E]. . Press [Enter] to try again. . . ")
+
+def get_seat(type_of_seat, ferry_id, ferry_list):
+    while (True):
+        if type_of_seat == "BUSINESS":
+            example_string = "[Ex: B04]"
+        else:
+            example_string = "[Ex: E06]"
+        seat_number = prompt_user_seat(example_string, ferry_id, ferry_list)
+        seat_number = seat_number.upper()
+        if (is_seat_available(ferry_id.upper(), seat_number, ferry_list)):
+            assign_seat(ferry_id.upper(), seat_number, ferry_list)
+            return seat_number
+        else:
+            input("Seat is not available please choose another seat!")
+
+
 # Optimize this function
 def purchase_menu():
     clear_screen()
@@ -270,63 +313,45 @@ def purchase_menu():
     time_choice = get_time()
     ferry_schedule = get_ferry_schedule()
     ferry_id = auto_select_ferry(destination_choice, time_choice)
-    #ferry_id = str(ferry_id)
     if is_ferry_full(ferry_id, ferry_list):
         input("Sorry the ferry is full, next ferry departs in 1 hour!\nPress [Enter] to Continue. . . ")
         main_menu()
     else:
-        type_of_seat = input("Which type of seat do you want? [Business or Economy]: ")# Could Create a function
-        if type_of_seat.upper() == "BUSINESS":
+        type_of_seat = get_type_of_seat()
+        type_of_seat = type_of_seat.upper()
+        if type_of_seat == "BUSINESS":
             if is_zone_available(ferry_id.upper(), type_of_seat, ferry_list):
-                    seat_number = prompt_user_seat("[Ex: B04", ferry_id, ferry_list)
-                    seat_number = seat_number.upper()
-                    if (is_seat_available(ferry_id.upper(), seat_number, ferry_list)):
-                        assign_seat(ferry_id.upper(), seat_number, ferry_list)
-                    else:
-                        input("Seat is not available please choose another seat!")
-                        purchase_menu()
+                    seat_number = get_seat(type_of_seat, ferry_id, ferry_list)
             else:
                 type_of_seat = "ECONOMY"
                 if is_zone_available(ferry_id.upper(), type_of_seat, ferry_list):
-                    choice = input("Business zone is fully booked, is it okay to be placed in Economy Class? ['Yes' or 'No'] ")
+                    choice = input("Business zone is fully booked, is it okay to be placed in Economy Class? Type and Enter['Yes' or 'No'] >> ")
                     if choice.upper() == "YES":
-                        seat_number = prompt_user_seat("[Ex: E06]", ferry_id, ferry_list)
-                        seat_number = seat_number.upper()
-                        if (is_seat_available(ferry_id.upper(), seat_number, ferry_list)):
-                            assign_seat(ferry_id.upper(), seat_number, ferry_list)
-                        else:
-                            input("Seat is not available please choose another seat!")
-                            purchase_menu()
-                    else:
+                        seat_number = get_seat(type_of_seat, ferry_id, ferry_list)
+                    elif choice.upper() == "NO":
                         input("Next Ferry is in 1 hour\nPress [Enter] to Continue. . . ")
                         main_menu()
+                    else:
+                        input("Invalid input...Press [Enter] to try again. .")
+                        seat_number = get_seat(type_of_seat, ferry_id, ferry_list)
                 else:
                     input("Ferry is full, next ferry is in 1 hour\nPress [Enter] to Continue. . . ")
                     main_menu()
         else:
             if is_zone_available(ferry_id.upper(), type_of_seat, ferry_list):
-                seat_number = prompt_user_seat("[Ex: E08]", ferry_id, ferry_list)
-                seat_number = seat_number.upper()
-                if (is_seat_available(ferry_id.upper(), seat_number, ferry_list)):
-                    assign_seat(ferry_id.upper(), seat_number, ferry_list)
-                else:
-                    input("Seat is not available please choose another seat!")
-                    purchase_menu()
+                seat_number = get_seat(type_of_seat, ferry_id, ferry_list)
             else:
                 type_of_seat = "BUSINESS"
                 if is_zone_available(ferry_id.upper(), type_of_seat, ferry_list):
                     choice = input("Economy zone is fully booked, is it okay to be placed in Business Class? ['Yes' or 'No'] ")
                     if choice.upper() == "YES":
-                        seat_number = prompt_user_seat("[Ex: B01]", ferry_id, ferry_list)
-                        seat_number = seat_number.upper()
-                        if (is_seat_available(ferry_id.upper(), seat_number, ferry_list)):
-                            assign_seat(ferry_id.upper(), seat_number, ferry_list)
-                        else:
-                            input("Seat is not available please choose another seat!")
-                            purchase_menu()
-                    else:
+                        seat_number = get_seat(type_of_seat, ferry_id, ferry_list)
+                    elif choice.upper() == "NO":
                         input("Next Ferry is in 1 hour\nPress [Enter] to Continue. . . ")
                         main_menu()
+                    else:
+                        input("Invalid input... Press [Enter] to try again. .")
+                        seat_number = get_seat(type_of_seat, ferry_id, ferry_list)
                 else:
                     input("Ferry is full, next ferry is in 1 hour\nPress [Enter] to Continue. . . ")
                     main_menu()
@@ -362,15 +387,15 @@ def ferry_menu():
         clear_screen()
         print("\nSELECT A FERRY TO VIEW THE SEATING ARRANGEMENT\n\n")
         for number, ferry_number in enumerate(ferry_list):
-            print(number + 1, ":", ferry_number)
+            print(number + 1, "-->", ferry_number)
+        print("\n")
         selection = input("Enter ferry number[Ex: Ferry 8]: ")
-        for ferry_number in ferry_list:
-            if ferry_number == selection.upper():
-                display_ferry_seats(selection.upper(), ferry_list)
-                break
-            else:
-                continue
-        break
+        if selection.upper() in ferry_list:
+            display_ferry_seats(selection.upper(), ferry_list)
+            break
+        else:
+            input("Enter valid ferry number! Press [Enter] to try again. .")
+
 
 
 def main_menu():
