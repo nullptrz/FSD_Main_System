@@ -321,6 +321,7 @@ def prompt_user_seat(seat_type, seat_string, ferry_id, ferry_list):
         try:
             seat_number = input("\nType the seat number"
                         + seat_text + ": ")  # Add input validation
+            seat_number = seat_number.upper()
             count = 0
             for ferry_number, ferry in ferry_list.items():
                 if ferry_number == ferry_id:
