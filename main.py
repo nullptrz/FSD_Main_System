@@ -452,10 +452,9 @@ def view_seating():
         selection = input("-" * 60 + "\n\t\t\tSEATING ARRANGEMENT MODULE\n" + "-" * 60 + """
 
         F - To select Ferry ID
-        T - To select Trip Time
         M - Return to Main Menu
 
-Please enter one of the Options[F or T or M]: """)
+Please enter one of the Options[F or M]: """)
         if (selection.upper() == "F"):
             ferry_menu()
         #elif (selection.upper() == "T"):
