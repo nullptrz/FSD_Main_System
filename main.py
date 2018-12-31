@@ -1,11 +1,12 @@
 import datetime
 import json
 import os
-from colorama import Fore, Back, Style
+from colorama import Fore, Back
 from colorama import init
 
 # Clears commandline screen for windows
 
+init()
 
 def clear_screen():
     def clear(): return os.system('cls')
@@ -312,14 +313,33 @@ def print_purchasing_header():
     print("-" * 60, "\n\t\t\tPurchasing Module\n" + "-" * 60)
 
 
-def prompt_user_seat(seat_type, ferry_id, ferry_list):
+def prompt_user_seat(seat_type, seat_string, ferry_id, ferry_list):
     while (True):
         clear_screen()
         display_ferry_seats(ferry_id.upper(), ferry_list)
-        seat_text = seat_type
-        seat_number = input("\nType the seat number"
-                            + seat_text + ": ")  # Add input validation
-        return seat_number
+        seat_text = seat_string
+        try:
+            seat_number = input("\nType the seat number"
+                        + seat_text + ": ")  # Add input validation
+            count = 0
+            for ferry_number, ferry in ferry_list.items():
+                if ferry_number == ferry_id:
+                    for seat, availability in ferry.items():
+                        count += 1
+                        if seat_type == "BUSINESS" and count > 0 and count <= 10:
+                            if seat == seat_number:
+                                return seat_number
+                        elif seat_type == "BUSINESS" and count > 10:
+                            input("Please enter seats between [B01-B10]..Press [Enter] to Continue. .")
+                            break
+                        elif seat_type == "ECONOMY" and count > 10:
+                            if seat == seat_number:
+                                return seat_number
+                        elif seat_type == "ECONOMY" and seat_number[0] == 'B' and count <= 10:
+                            input("Please enter seats between [E01-E40]..Press [Enter] to Continue. .")
+                            break
+        except:
+            input("Please input a valid seat number..Press [Enter] to Continue. .")
 
 
 def get_type_of_seat():
@@ -346,7 +366,7 @@ def get_seat(type_of_seat, ferry_id, ferry_list):
             example_string = "[Ex: B04]"
         else:
             example_string = "[Ex: E06]"
-        seat_number = prompt_user_seat(example_string, ferry_id, ferry_list)
+        seat_number = prompt_user_seat(type_of_seat, example_string, ferry_id, ferry_list)
         seat_number = seat_number.upper()
         if (is_seat_available(ferry_id.upper(), seat_number, ferry_list)):
             assign_seat(ferry_id.upper(), seat_number, ferry_list)
@@ -438,8 +458,8 @@ def view_seating():
 Please enter one of the Options[F or T or M]: """)
         if (selection.upper() == "F"):
             ferry_menu()
-        elif (selection.upper() == "T"):
-            trip_time_menu()  # Need to make menu
+        #elif (selection.upper() == "T"):
+            #trip_time_menu()  # Need to make menu
         elif (selection.upper() == "M"):
             main_menu()
         else:
